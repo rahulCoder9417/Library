@@ -1,6 +1,8 @@
 import { Session } from "next-auth";
 
-const Header = ({ session }: { session: Session }) => {
+const Header = async({ session }: { session: Session }) => {
+
+
   return (
     <header className="admin-header">
       <div>

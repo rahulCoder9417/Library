@@ -86,8 +86,8 @@ const BorrowBook = ({
           title: "Success",
           description: "Book borrowed successfully",
         });
-
-        router.push("/");
+        
+        setIsBorrowed(true)
       } else {
         toast({
           title: "Error",

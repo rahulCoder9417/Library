@@ -3,10 +3,10 @@ import Image from "next/image";
 import { signOut } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Session } from "next-auth";
-const Header = ({session}:{session:Session}) => {
-  const userAvatar: string =
-  session?.user?.name?.split(" ")[0]?.toUpperCase()[0]  +
-  (session?.user?.name?.split(" ")[1]?.toUpperCase()?.[0] ?? "");
+import Avatar from "./Avatar";
+import IsAdminComponent from "./IsAdminComponent";
+const Header = async({session}:{session:Session}) => {
+ 
   return (
     <header className="my-10 flex justify-between gap-5">
       <Link href="/">
@@ -14,6 +14,7 @@ const Header = ({session}:{session:Session}) => {
       </Link>
 
       <ul className="flex flex-row items-center gap-8">
+        <IsAdminComponent id={session?.user?.id} />
         <li>
           <form
             action={async () => {
@@ -27,9 +28,7 @@ const Header = ({session}:{session:Session}) => {
           </form>
           </li>
           <li>
-          {session?.user?.name && <div className="w-10 mb-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-            {userAvatar}
-          </div>}
+          {session?.user?.name && <Avatar session={session}/>}
         </li>
       </ul>
     </header>
