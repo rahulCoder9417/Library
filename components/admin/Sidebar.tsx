@@ -15,12 +15,14 @@ const Sidebar = ({ session }: { session: Session }) => {
     <div className="admin-sidebar">
       <div>
         <div className="logo">
+          <Link href="/">
           <Image
             src="/icons/admin/logo.svg"
             alt="logo"
             height={37}
             width={37}
           />
+          </Link>
           <h1>BookWise</h1>
         </div>
 
