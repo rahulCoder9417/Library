@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import BookOverview from "@/components/BookOverview";
 import BookVideo from "@/components/BookVideo";
+import BookList from "@/components/BookList";
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
@@ -17,6 +18,12 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     .from(books)
     .where(eq(books.id, id))
     .limit(1);
+  
+  const similarBooks = await db
+      .select()
+      .from(books)
+      .where(eq(books.genre,bookDetails.genre));
+
 
   if (!bookDetails) redirect("/404");
 
@@ -41,8 +48,10 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
             </div>
           </section>
         </div>
-
-        {/*  SIMILAR*/}
+        {similarBooks?.length>1 &&
+        <div className="flex-1">
+          <BookList title="Similar Books" books={similarBooks} />
+        </div>}
       </div>
     </>
   );

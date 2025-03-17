@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/database/drizzle';
 import { books } from '@/database/schema';
-import { eq, like, asc, desc, gt } from 'drizzle-orm';
+import {  like, asc, desc, gt } from 'drizzle-orm';
 
 export async function POST(request: Request) {
   try {
