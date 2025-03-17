@@ -8,13 +8,18 @@ import IsAdminComponent from "./IsAdminComponent";
 const Header = async({session}:{session:Session}) => {
  
   return (
-    <header className="my-10 flex justify-between gap-5">
+    <header className="my-10 flex  justify-between gap-5">
       <Link href="/">
         <Image src="/icons/logo.svg" alt="logo" width={40} height={40} />
       </Link>
 
       <ul className="flex flex-row items-center gap-8">
         <IsAdminComponent id={session?.user?.id} />
+        <li>
+          <Button className="mb-10 max-sm:btn-line relative max-sm:size-10 max-sm:bg-inherit max-sm:text-sm max-sm:hover:bg-inherit max-sm:text-white" variant="secondary" asChild>
+          <Link href="/library">Library</Link>
+          </Button>
+        </li>
         <li>
           <form
             action={async () => {
@@ -24,7 +29,7 @@ const Header = async({session}:{session:Session}) => {
             }}
             className="mb-10"
           >
-            <Button>Logout</Button>
+            <Button className="max-sm:size-10 max-sm:btn-line relative max-sm:bg-inherit max-sm:text-sm max-sm:hover:bg-inherit max-sm:text-white" variant="secondary">Logout</Button>
           </form>
           </li>
           <li>

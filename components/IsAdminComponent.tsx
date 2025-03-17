@@ -23,7 +23,7 @@ const IsAdminComponent = async ({ id }: Props) => {
 
   return (
     <li>
-      <Button className="mb-10 bg-slate-500"  >
+      <Button  className="mb-10 max-sm:btn-line relative max-sm:size-10 max-sm:bg-inherit max-sm:text-sm max-sm:hover:bg-inherit max-sm:text-white"  >
       <Link href="/admin">Admin</Link></Button>
     </li>
   );
