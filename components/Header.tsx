@@ -33,7 +33,7 @@ const Header = async({session}:{session:Session}) => {
           </form>
           </li>
           <li>
-          {session?.user?.name && <Avatar session={session}/>}
+          {session?.user?.name && <Avatar name={session.user.name}/>}
         </li>
       </ul>
     </header>
