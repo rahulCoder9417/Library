@@ -31,7 +31,7 @@ const Page = async () => {
   }
 
   return (
-    <div>
+    <div className="min-h-[100vh] hide-scrollbar overflow-y-auto">
       <section className="flex gap-10 max-md:gap-2 w-auto">
         {/* Borrowed Books */}
         <NewWeekAnalytics

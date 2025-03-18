@@ -18,7 +18,7 @@ const LatestBookCard = ({ book }: LatestBookCardProps) => {
           path={book.coverUrl}
           urlEndpoint={config.env.imagekit.urlEndpoint}
           alt={book.title}
-          // Remove "fill" if you want to use fixed width and height
+          fill
           className="w-full h-full rounded-sm object-cover"
           loading="lazy"
           lqip={{ active: true }}
@@ -34,6 +34,7 @@ const LatestBookCard = ({ book }: LatestBookCardProps) => {
         </p>
         <div className="flex items-center max-md:items-start max-md:flex-col gap-2 mt-2">
           <span className="text-gray-400 text-sm">
+            {/* @ts-ignore */}
           {new Date(book.createdAt).toLocaleDateString("en-US", {
   year: "numeric",
   month: "short",

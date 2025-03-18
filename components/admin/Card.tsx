@@ -28,7 +28,7 @@ const Card =  ({ borrow_date, user, book }: BorrowedBook) => {
 </div>
 
         
-      <div className="flex-1">
+      <div className="w-[80%]">
         <h3 className="text-sm font-semibold max-md:text-xs text-gray-800">{book.title}</h3>
         <p className="text-xs text-gray-500">
           By {book.author} • {book.genre}

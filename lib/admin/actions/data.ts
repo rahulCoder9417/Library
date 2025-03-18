@@ -147,3 +147,19 @@ export const getLatestBooks = async (): Promise<Book[]> => {
     throw new Error("Could not fetch latest books");
   }
 };
+
+export const getUsers = async (): Promise<{ fullName: string; email: string }[]> => {
+  try {
+    const getUsers = await db
+      .select({ fullName: users.fullName, email: users.email })
+      .from(users)
+      .orderBy(users.createdAt)
+      .where(eq(users.status,"PENDING"))
+      .limit(6);
+    
+    return getUsers; // Return the whole array, not just the first user
+  } catch (error) {
+    console.error("Failed to fetch users", error);
+    throw new Error("Failed to fetch users");
+  }
+}
