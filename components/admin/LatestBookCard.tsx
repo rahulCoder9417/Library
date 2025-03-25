@@ -3,6 +3,7 @@
 import React from "react";
 import { IKImage } from "imagekitio-next";
 import config from "@/lib/config";
+import { redirect } from "next/navigation";
 
 interface LatestBookCardProps {
   book: Book;
@@ -12,7 +13,7 @@ const LatestBookCard = ({ book }: LatestBookCardProps) => {
   if (!book) return null; // handle incomplete data
 
   return (
-    <div className="flex items-start gap-4 bg-[#F8F8FF] p-4 relative rounded-lg">
+    <div onClick={()=>redirect(`/books/${book.id}`)} className="flex cursor-pointer items-start gap-4 bg-[#F8F8FF] p-4 relative rounded-lg">
       <div className="w-12 h-16 relative">
         <IKImage
           path={book.coverUrl}

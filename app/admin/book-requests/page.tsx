@@ -1,8 +1,7 @@
 import { db } from "@/database/drizzle";
-import { books } from "@/database/schema";
+import { borrowRecords } from "@/database/schema";
 import Link from "next/link";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { Image } from "@/components/Image";
 import DeleteUser from "@/components/admin/DeleteUser";
 
@@ -13,41 +12,32 @@ export default async function Page({ searchParams }: { searchParams: { page?: st
   page ? currentPage=Number(page):currentPage=1;
   const offset = (currentPage - 1) * 10;
 
-  // Fetch books from the database
   const booksData = await db
     .select({
-      id: books.id,
-      title: books.title,
-      author: books.author,
-      genre: books.genre,
-      createdAt: books.createdAt,
-      bookCover: books.coverUrl,
+      title:borrowRecords.
     })
-    .from(books)
+    .from(borrowRecords)
     .limit(10)
     .offset(offset);
 
   return (
     <section className="w-full rounded-2xl bg-white p-7">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-xl font-semibold">All Books</h2>
-        <Button className="bg-primary-admin" asChild>
-          <Link href="/admin/books/new" className="text-white">
-            + Add a New Book
-          </Link>
-        </Button>
+        <h2 className="text-xl font-semibold">Borrow Requests</h2>
+
       </div>
 
       <div className="flex flex-row h-full hide-scrollbar flex-1 mt-5">
         <Table className="h-full">
           <TableHeader>
             <TableRow className="bg-[#ececf4] text-slate-800 rounded-lg">
-              <TableHead className="text-slate-800">Title</TableHead>
-              <TableHead className="text-slate-800">Author</TableHead>
-              <TableHead className="text-slate-800">Genre</TableHead>
-              <TableHead className="text-slate-800">Created At</TableHead>
-              <TableHead className="text-slate-800">View</TableHead>
-              <TableHead className="text-slate-800">Delete</TableHead>
+              <TableHead className="text-slate-800">Book Title</TableHead>
+              <TableHead className="text-slate-800">User Requested</TableHead>
+              <TableHead className="text-slate-800">Borrowed Date</TableHead>
+              <TableHead className="text-slate-800">Return Date</TableHead>
+              <TableHead className="text-slate-800">Due Date</TableHead>
+              <TableHead className="text-slate-800">Status</TableHead>
+              <TableHead className="text-slate-800">Recipt</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
