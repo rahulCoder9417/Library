@@ -10,6 +10,7 @@ import LatestBookCard from "./LatestBookCard";
 import Avatar from "../Avatar";
 import { cn } from "@/lib/utils";
 import CreateBook from "./CreateBook";
+import Link from "next/link";
 interface User {
   email: string;
   fullname: string;
@@ -56,7 +57,7 @@ const AdminSection = async ({ a }: AdminSectionProps) => {
             {a === "borrow" ? "Borrow Request" : "Recently Added Books"}
           </div>
           <button className="bg-blue-300 text-[#25388C] px-4 py-2 max-md:text-sm rounded-md hover:bg-blue-400">
-            View All
+            <Link href={a === "borrow" ? "/admin/book-requests" : "/admin/books"}> View All</Link>
           </button>
         </div>
 
@@ -85,18 +86,18 @@ const AdminSection = async ({ a }: AdminSectionProps) => {
       </div>
       <div
         className={cn(
-          `rounded-lg hide-scrollbar  overflow-y-auto bg-white flex-col w-auto p-5  gap-4 flex-1 ${a === "book" ? "hidden" :"flex"} `
+          `rounded-lg hide-scrollbar  overflow-y-auto bg-white flex-col w-auto p-5  gap-4  ${a === "book" ? "hidden" :"flex"} `
         )}
       >
         <div className="flex items-center justify-between font-semibold w-full ">
           <div className="text-2xl max-md:text-xl">Account Request</div>
           <button className="bg-blue-300 text-[#25388C] px-4 py-2 max-md:text-sm rounded-md hover:bg-blue-400">
-            View All
+            <Link href={"/admin/account-requests"} >View all</Link>
           </button>
         </div>
-        <div className={` ${latestUsers?.length!==0 ? "grid grid-cols-3 gap-5" :"flex items-center min-h-[120px] justify-evenly flex-col" } `}>
+        <div className={` ${latestUsers?.length!==0 ? "grid grid-cols-3 gap-5" :"flex items-center  justify-evenly flex-col" } `}>
           {latestUsers?.length!==0? latestUsers?.map((item, i) => (
-            <div className="bg-[#F8F8FF] rounded-2xl overflow-hidden flex items-center min-h-[120px] justify-evenly flex-col " key={i}>
+            <div className="bg-[#F8F8FF] rounded-2xl overflow-hidden flex items-center justify-evenly flex-col " key={i}>
               <Avatar avatarClass="mt-5 bg-blue-400" name={item.fullName} />
               <h2 className="max-md:text-sm text-center">{item.fullName}</h2>
               <h1 className="text-gray-600 max-md:text-xs">{item.email}</h1>

@@ -39,7 +39,7 @@ export default async function Page({ searchParams }: { searchParams: { page?: st
       </div>
 
       <div className="flex flex-row h-full hide-scrollbar flex-1 mt-5">
-        <Table className="h-full">
+        <Table className="h-full font-medium">
           <TableHeader>
             <TableRow className="bg-[#ececf4] text-slate-800 rounded-lg">
               <TableHead className="text-slate-800">Title</TableHead>

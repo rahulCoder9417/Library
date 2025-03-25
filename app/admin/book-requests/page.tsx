@@ -1,10 +1,11 @@
 import { db } from "@/database/drizzle";
-import { borrowRecords } from "@/database/schema";
+import { books, borrowRecords, users } from "@/database/schema";
 import Link from "next/link";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Image } from "@/components/Image";
-import DeleteUser from "@/components/admin/DeleteUser";
-
+import { desc, eq } from "drizzle-orm";
+import AdminBorrow from "@/components/admin/AdminBorrow";
+import DownloadReceipt from "@/components/admin/DownloadRecipt";
 
 export default async function Page({ searchParams }: { searchParams: { page?: string } }) {
   const {page} =  await searchParams;
@@ -13,12 +14,26 @@ export default async function Page({ searchParams }: { searchParams: { page?: st
   const offset = (currentPage - 1) * 10;
 
   const booksData = await db
-    .select({
-      title:borrowRecords.
-    })
-    .from(borrowRecords)
-    .limit(10)
-    .offset(offset);
+  .select({
+    userId: borrowRecords.userId,
+    id: borrowRecords.id,
+    fullName: users.fullName, // Get user's full name
+    email: users.email, // Get user's email
+    bookId: borrowRecords.bookId,
+    title: books.title, // Get book title
+    coverUrl: books.coverUrl, // Get book cover URL
+    borrowDate: borrowRecords.borrowDate,
+    returnDate: borrowRecords.returnDate,
+    dueDate: borrowRecords.dueDate,
+    status: borrowRecords.status,
+  })
+  .from(borrowRecords)
+  .innerJoin(users, eq(users.id, borrowRecords.userId)) // Correct usage
+  .innerJoin(books, eq(books.id, borrowRecords.bookId)) // Correct usage
+  .orderBy(desc(borrowRecords.borrowDate))// Sort by latest borrow date
+  .limit(10)
+  .offset(offset);
+
 
   return (
     <section className="w-full rounded-2xl bg-white p-7">
@@ -28,7 +43,7 @@ export default async function Page({ searchParams }: { searchParams: { page?: st
       </div>
 
       <div className="flex flex-row h-full hide-scrollbar flex-1 mt-5">
-        <Table className="h-full">
+        <Table className="h-full font-medium" >
           <TableHeader>
             <TableRow className="bg-[#ececf4] text-slate-800 rounded-lg">
               <TableHead className="text-slate-800">Book Title</TableHead>
@@ -36,27 +51,28 @@ export default async function Page({ searchParams }: { searchParams: { page?: st
               <TableHead className="text-slate-800">Borrowed Date</TableHead>
               <TableHead className="text-slate-800">Return Date</TableHead>
               <TableHead className="text-slate-800">Due Date</TableHead>
-              <TableHead className="text-slate-800">Status</TableHead>
-              <TableHead className="text-slate-800">Recipt</TableHead>
+              <TableHead className="text-slate-800 text-center">Status</TableHead>
+              <TableHead className="text-slate-800 text-center">Recipt</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {booksData.length > 0 ? (
               booksData.map((book) => (
-                <TableRow key={book.id}>
-                  <TableCell className="font-medium flex gap-2">
-                    <Image coverImage={book.bookCover} title={book.title} />
+                <TableRow key={book.bookId}>
+                  <TableCell className="font-medium  max-md:text-xs flex gap-2">
+                    <Image coverImage={book.coverUrl} title={book.title} />
                     {book.title}</TableCell>
-                  <TableCell>{book.author}</TableCell>
-                  <TableCell>{book.genre}</TableCell>
-                  <TableCell>{book.createdAt ? new Date(book.createdAt).toLocaleDateString() : "N/A"}</TableCell>
+                  <TableCell><span className="block" >{book.fullName}</span>{book.email}</TableCell>
+                  <TableCell>{new Date(book.borrowDate).toLocaleDateString()}</TableCell>
+                  <TableCell>{book.returnDate ? new Date(book.returnDate).toLocaleDateString() : "N/A"}</TableCell>
                   <TableCell>
-                  <Link href={`/books/${book.id}`} className="text-blue-600 hover:underline">
-                      View
-                    </Link>
+                  {new Date(book.dueDate).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell className={`text-center`}>
+                    <AdminBorrow status={book.status } borrowId={book.id} />
                   </TableCell>
                   <TableCell className="text-center">
-                  <DeleteUser id={book.id} type="book" />
+                    <DownloadReceipt user={{fullName:book.fullName,email:book.email}} book={{title:book.title}} borrowDate={new Date(book.borrowDate).toLocaleDateString() } returnDate={book.returnDate && new Date(book?.returnDate).toLocaleDateString() }   />
                   </TableCell>
                 </TableRow>
               ))

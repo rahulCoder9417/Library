@@ -23,7 +23,7 @@ const RequestButton = ({ id, status }:RequestButtonProps) => {
       onClick={handleChangeStatus}
       className={`${
         status === "APPROVED" ? "bg-red-200 text-red-700" : "bg-green-200 text-green-700"
-      } w-full py-2 font-semibold rounded-2xl`}
+      } w-full py-2 font-semibold rounded-2xl max-md:text-xs`}
     >
       {status === "APPROVED" ? "Revoke Account" : "Approve Account"}
     </button>

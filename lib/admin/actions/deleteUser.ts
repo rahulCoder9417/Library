@@ -42,3 +42,23 @@ export async function allUser(USERS_PER_PAGE:number,offset:number) {
     throw new Error("Failed to update user status");
   }
 }
+
+
+export const changeBorrowStatus = async (
+  borrowId: string,
+  newStatus: "BORROWED" | "RETURNED"
+) => {
+  try {
+    const updateData =
+      newStatus === "BORROWED"
+        ? { status: "BORROWED", borrowDate: new Date(), returnDate: null }
+        : { status: "RETURNED", returnDate: new Date() };
+//@ts-ignore
+    await db.update(borrowRecords).set(updateData).where(eq(borrowRecords.id, borrowId));
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update borrow status:", error);
+    return { success: false, message: "Error updating borrow status" };
+  }
+};
