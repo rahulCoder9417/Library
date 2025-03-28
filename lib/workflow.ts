@@ -20,16 +20,18 @@ export const sendEmail = async ({
   subject: string;
   message: string;
 }) => {
-  await qstashClient.publishJSON({
+  try{await qstashClient.publishJSON({
     api: {
       name: "email",
       provider: resend({ token: config.env.resendToken }),
     },
     body: {
-      from: "Rahul library <hello@rahullibrary.com>",
+      from: "onboarding@resend.dev",
       to: [email],
       subject,
-      html: message,
+      html: `<p>${message}</p>`,
     },
-  });
+  });}catch(e){
+    console.log("Cannot send email",email)
+  }
 };

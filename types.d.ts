@@ -1,5 +1,6 @@
 interface Book {
   isLoanedBook?: boolean;
+  daysLeft?:number| "Overdue";
   id: string;
   title: string;
   author: string;

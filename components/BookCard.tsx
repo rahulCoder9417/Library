@@ -12,6 +12,7 @@ const BookCard = ({
   coverColor,
   coverUrl,
   isLoanedBook = false,
+  daysLeft=0
 }: Book) => (
   <li className={cn(isLoanedBook && "xs:w-52 w-full")}>
     <Link
@@ -35,10 +36,9 @@ const BookCard = ({
               height={18}
               className="object-contain"
             />
-            <p className="text-light-100">11 days left to return</p>
+            <p className="text-light-100">{ daysLeft==="Overdue" ?"OverDue Book Return It":`${daysLeft} days left to return`}</p>
           </div>
 
-          <Button className="book-btn hover:!bg-dark-600 bg-dark-500">Download receipt</Button>
         </div>
       )}
     </Link>

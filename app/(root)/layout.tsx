@@ -6,7 +6,6 @@ import { after } from "next/server";
 import { db } from "@/database/drizzle";
 import { users } from "@/database/schema";
 import { eq } from "drizzle-orm";
-
 const Layout = async ({ children }: { children: ReactNode }) => {
   const session = await auth();
 
