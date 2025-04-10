@@ -3,32 +3,37 @@ import { Client as WorkflowClient } from "@upstash/workflow";
 import { Client as QStashClient } from "@upstash/qstash";
 import config from "@/lib/config";
 
+// Initialize WorkflowClient (unchanged)
 export const workflowClient = new WorkflowClient({
   baseUrl: config.env.upstash.qstashUrl,
   token: config.env.upstash.qstashToken,
 });
 
+// Initialize QStashClient
 const qstashClient = new QStashClient({
   token: config.env.upstash.qstashToken,
 });
 
+// Email-sending function using Qstash to trigger an EmailJS endpoint with HTML
 export const sendEmail = async ({
   email,
   subject,
-  html,
+  message, 
+  template
 }: {
   email: string;
   subject: string;
-  html: string;
+  message: string;
+  template: string;
 }) => {
   try {
     await qstashClient.publishJSON({
-      url: `${config.env.prodApiEndpoint}/api/mailgun-email`,
+      url: `${config.env.prodApiEndpoint}/api/emailjs-email`,
       body: {
-        to: email,
-        from: "noreply@sandbox123.mailgun.org", // Replace with your sender
+        to_email: email,
         subject,
-        html,
+        message: message, 
+        template
       },
     });
     console.log(`Email queued for ${email} via Qstash`);

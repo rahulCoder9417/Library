@@ -43,9 +43,10 @@ export const { POST } = serve<InitialData>(async (context) => {
   // Welcome Email
   await context.run("new-signup", async () => {
      await sendEmail({
+      template:"template_zx91911",
       email,
-      subject: `Welcome aboard, ${fullName}!`,
-      html: `<h1>Hi ${fullName}</h1><p>Thanks for joining us!</p>`,
+      subject:`Welcome to ${fullName}!`,
+      message: "",
     });
   });
 
@@ -60,16 +61,18 @@ export const { POST } = serve<InitialData>(async (context) => {
       await context.run("send-email-non-active", async () => {
         await sendEmail({
           email,
-          subject: `Welcome aboard, ${fullName}!`,
-          html: `<h1>Hi ${fullName}</h1><p>We miss you</p>`,
+          subject: `Welcome to ${fullName}!`,
+          message:"Hey user I think You are inactive Come Back",
+          template:"template_mr7rlrh"
         });
       });
     } else if (state === "active") {
       await context.run("send-email-active", async () => {
         await sendEmail({
           email,
-          subject: `Welcome aboard, ${fullName}!`,
-          html: `<h1>Hi ${fullName}</h1><p>Welcome back</p>`,
+          subject: `Welcome to ${fullName}!`,
+          message:"YEah my boy you came back from the dead",
+          template:"template_mr7rlrh"
         });
       });
     }
