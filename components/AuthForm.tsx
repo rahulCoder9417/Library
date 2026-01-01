@@ -28,11 +28,12 @@ import { FIELD_NAMES, FIELD_TYPES } from "@/constants";
 import FileUpload from "@/components/FileUpload";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { sendEmail } from "@/lib/email";
 
 interface Props<T extends FieldValues> {
   schema: ZodType<T>;
   defaultValues: T;
-  onSubmit: (data: T) => Promise<{ success: boolean; error?: string }>;
+  onSubmit: (data: T) => Promise<{ success: boolean; fullName?: string; error?: string }>;
   type: "SIGN_IN" | "SIGN_UP";
 }
 
@@ -63,7 +64,7 @@ const AuthForm = <T extends FieldValues>({
           ? "You have successfully signed in."
           : "You have successfully signed up.",
       });
-
+      await sendEmail(data.email,result.fullName! , isSignIn ? "signin" : "signup");
       router.push("/");
     } else {
       toast({

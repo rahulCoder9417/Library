@@ -10,6 +10,7 @@ import ratelimit from "@/lib/ratelimit";
 import { redirect } from "next/navigation";
 import { workflowClient } from "@/lib/workflow";
 import config from "@/lib/config";
+import { sendEmail } from "@/lib/email";
 
 export const signInWithCredentials = async (
   params: Pick<AuthCredentials, "email" | "password">,
@@ -35,8 +36,13 @@ const result = await ratelimit.limit(ip);
     if (result?.error) {
       return { success: false, error: result.error };
     }
+    const user = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
 
-    return { success: true };
+    return { success: true, fullName : user[0].fullName  };
   } catch (error) {
     console.log(error, "Signin error");
     return { success: false, error: "Signin error" };
@@ -69,18 +75,9 @@ export const signUp = async (params: AuthCredentials) => {
       password: hashedPassword,
       universityCard,
     });
-    console.log("work trigering")
-    await workflowClient.trigger({
-      url: `${config.env.prodApiEndpoint}/api/workflows/onboarding`,
-      body: {
-        email,
-        fullName,
-      },
-    });
-    console.log("work ended")
+    
     await signInWithCredentials({ email, password });
-
-    return { success: true };
+    return { success: true, fullName };
   } catch (error) {
     console.log(error, "Signup error");
     return { success: false, error: "Signup error" };

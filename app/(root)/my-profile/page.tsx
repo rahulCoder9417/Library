@@ -35,15 +35,15 @@ const Page = async () => {
       } as Book;
     })
   );
-
+console.log(booksData)
 
   return (
-    <div className="flex max-md:flex-col gap-16  max-w-7xl h-full">
-      <section className="h-[100vh]  rounded-lg   relative md:w-[50%]">
+    <div className="flex max-md:flex-col gap-16  p-8 w-[90vw] h-full">
+      <section className="h-[100vh]  rounded-lg   relative md:w-[30%]">
         <div className="absolute flex  justify-center left-1/2 -translate-x-1/2 top-[-20px] z-10 bg-slate-600 w-14 h-24 rounded-b-full">
           <div className="bg-slate-950 absolute bottom-6 rounded-lg w-[70%] h-1 "></div>
         </div>
-        <div className="min-h-[80%] rounded-3xl flex flex-col items-start pl-8 justify-evenly absolute bg-slate-900 w-full">
+        <div className="min-h-[80%] rounded-3xl w-[100%] flex flex-col items-start pl-8 justify-evenly absolute bg-slate-900 w-full">
           <div className="h-24 flex justify-end items-center w-full ">
             <BadgeCheck className="mr-10 size-10 bg-blue-600 text-white bg-clip-text  " />
           </div>

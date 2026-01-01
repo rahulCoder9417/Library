@@ -11,20 +11,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import BookList from '@/components/BookList';
-
+import { sendEmail } from '@/lib/email';
 const Page = () => {
   const [value, setValue] = useState('');
   const [sortBy, setSortBy] = useState('Oldest');
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState<Book[] >([]);
   const [page, setPage] = useState(1);
+const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setPage(1);
   }, [value, sortBy]);
   useEffect(() => {
     const fetchBooksData = async () => {
-     
+     setLoading(true);
       try {
+        
         const response = await fetch('/api/books', {
           method: 'POST',
           headers: {
@@ -37,10 +39,12 @@ const Page = () => {
           }),
         });
         const data = await response.json();
+
         setBooks(data);
       } catch (error) {
         console.error('Error fetching books:', error);
       }
+      setLoading(false);
     };
 
     fetchBooksData();
@@ -61,7 +65,7 @@ const Page = () => {
 
       {/* Sort Dropdown */}
       <section className="mt-4 text-white relative w-full ">
-        <Select  onValueChange={(val) => setSortBy(val)} defaultValue={sortBy}>
+        <Select  onValueChange={(val:string) => setSortBy(val)} defaultValue={sortBy}>
           <SelectTrigger className="w-[180px] max-md:w-[100px] absolute right-0">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
@@ -75,7 +79,12 @@ const Page = () => {
       </section>
 
       {/* Book List */}
-      {books?.length<1 ? <h1 className="font-bebas-neue mt-20 text-5xl font-bold text-center text-light-100">
+      {
+      loading ?
+      <h1 className="font-bebas-neue mt-20 text-5xl font-bold text-center text-light-100">
+        Fetching Books...
+      </h1> :
+      books?.length<1 ? <h1 className="font-bebas-neue mt-20 text-5xl font-bold text-center text-light-100">
         no books available
       </h1> :<BookList title="All Library Books" books={books} />}
       
@@ -93,7 +102,7 @@ const Page = () => {
         <button
           className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
           onClick={() => setPage(prev => prev + 1)}
-          disabled={books.length < 10} // Disable if less than 10 books are returned
+          disabled={(books && books?.length < 12)?true :false} // Disable if less than 10 books are returned
         >
           Next
         </button>

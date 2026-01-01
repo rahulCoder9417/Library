@@ -58,7 +58,7 @@ export default async function Page({ searchParams }: { searchParams: { page?: st
           <TableBody>
             {booksData.length > 0 ? (
               booksData.map((book) => (
-                <TableRow key={book.bookId}>
+                <TableRow key={`${book.id}-${book.userId}`}>
                   <TableCell className="font-medium  max-md:text-xs flex gap-2">
                     <Image coverImage={book.coverUrl} title={book.title} />
                     {book.title}</TableCell>

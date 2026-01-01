@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     }
 
     // Apply pagination: limit to 10 items per page.
-    const limit = 10;
+    const limit = 12;
     const offset = (page - 1) * limit;
     query = query.limit(limit).offset(offset);
 
