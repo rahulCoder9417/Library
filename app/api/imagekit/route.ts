@@ -7,7 +7,6 @@ const {
     imagekit: { publicKey, privateKey, urlEndpoint },
   },
 } = config;
-console.log(publicKey, privateKey, urlEndpoint);
 const imagekit = new ImageKit({ publicKey, privateKey, urlEndpoint });
 
 export async function GET() {

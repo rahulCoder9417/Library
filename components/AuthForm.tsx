@@ -1,4 +1,6 @@
 "use client";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -41,6 +43,7 @@ const AuthForm = <T extends FieldValues>({
   onSubmit,
 }: Props<T>) => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const isSignIn = type === "SIGN_IN";
 
@@ -50,6 +53,7 @@ const AuthForm = <T extends FieldValues>({
   });
 
   const handleSubmit: SubmitHandler<T> = async (data) => {
+
     const result = await onSubmit(data);
 
     if (result.success) {
@@ -106,14 +110,30 @@ const AuthForm = <T extends FieldValues>({
                         onFileChange={field.onChange}
                       />
                     ) : (
-                      <Input
-                        required
-                        type={
-                          FIELD_TYPES[field.name as keyof typeof FIELD_TYPES]
-                        }
-                        {...field}
-                        className="form-input"
-                      />
+                      FIELD_TYPES[field.name as keyof typeof FIELD_TYPES] === "password" ? (
+                        <div className="relative">
+                          <Input
+                            required
+                            type={showPassword ? "text" : "password"}
+                            {...field}
+                            className="form-input pr-10"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                          >
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          </button>
+                        </div>
+                      ) : (
+                        <Input
+                          required
+                          type={FIELD_TYPES[field.name as keyof typeof FIELD_TYPES]}
+                          {...field}
+                          className="form-input"
+                        />
+                      )
                     )}
                   </FormControl>
                   <FormMessage />
