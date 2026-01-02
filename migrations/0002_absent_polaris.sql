@@ -1,0 +1,1 @@
+ALTER TABLE "borrow_records" ADD COLUMN "workflow_run_id" text DEFAULT '' NOT NULL;

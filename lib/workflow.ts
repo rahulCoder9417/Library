@@ -1,45 +1,43 @@
-// lib/sendEmail.ts
-import { Client as WorkflowClient } from "@upstash/workflow";
-import { Client as QStashClient } from "@upstash/qstash";
+import { Client } from "@upstash/qstash";
 import config from "@/lib/config";
 
-// Initialize WorkflowClient (unchanged)
-export const workflowClient = new WorkflowClient({
-  baseUrl: config.env.upstash.qstashUrl,
+const qstash = new Client({
   token: config.env.upstash.qstashToken,
 });
 
-// Initialize QStashClient
-const qstashClient = new QStashClient({
-  token: config.env.upstash.qstashToken,
-});
-
-// Email-sending function using Qstash to trigger an EmailJS endpoint with HTML
-export const sendEmail = async ({
-  email,
-  subject,
-  message, 
-  template
-}: {
+export async function triggerBorrowWorkflow(payload: {
+  borrowId: string;
   email: string;
-  subject: string;
-  message: string;
-  template: string;
-}) => {
+  studentName: string;
+  dueDate: string;
+}) {
+  const res = await qstash.publishJSON({
+    url: `${config.env.apiEndpoint}/api/workflows/borrow-remainder`,
+    body: payload,
+  });
+
+  return res.messageId;
+}
+
+export async function cancelBorrowWorkflow(workflowRunId: string) {
   try {
-    await qstashClient.publishJSON({
-      url: `${config.env.prodApiEndpoint}/api/emailjs-email`,
-      body: {
-        to_email: email,
-        subject,
-        message: message, 
-        template
-      },
-    });
-    console.log(`Email queued for ${email} via Qstash`);
-    return { success: true, message: "Email queued successfully" };
+    const response = await fetch(
+      `https://qstash.upstash.io/v2/workflows/runs/${workflowRunId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${config.env.upstash.qstashToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to cancel workflow: ${response.statusText}`);
+    }
+
+    return { success: true };
   } catch (error) {
-    console.log("Cannot queue email for", email, error);
-    return { success: false, message: "Failed to queue email" };
+    console.error("Failed to cancel workflow:", error);
+    return { success: false };
   }
-};
+}

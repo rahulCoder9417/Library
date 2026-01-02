@@ -1,4 +1,4 @@
-type EmailType = "signup" | "signin" | "waiting";
+type EmailType = "signup" | "signin" | "waiting" | "borrow-remainder" | "borrow-overdue";
 
 export const sendEmail = async (
   email: string,
@@ -8,7 +8,6 @@ export const sendEmail = async (
   const cardColor = "#020617";
   const textColor = "#e5e7eb";
   const mutedText = "#94a3b8";
-
   let subject = "";
   let message = "";
 
@@ -38,6 +37,22 @@ export const sendEmail = async (
       <p>Hi <strong>${studentName}</strong>,</p>
       <p>It looks like you haven’t logged in for a while.</p>
       <p>Your BookWise account is waiting for you — come back and continue learning 📖.</p>
+    `;
+  }
+
+  if (type === "borrow-remainder") {
+    subject = "Book due soon ⏰";
+    message = `
+      <p>Hi <strong>${studentName}</strong>,</p>
+      <p>Your borrowed book is due in 2 days.</p>
+    `;
+  }
+
+  if (type === "borrow-overdue") {
+    subject = "Book overdue 🚨";
+    message = `
+      <p>Hi <strong>${studentName}</strong>,</p>
+      <p>Your borrowed book is overdue.</p>
     `;
   }
 

@@ -1,9 +1,10 @@
 "use server";
 
 import { db } from "@/database/drizzle";
-import { books, borrowRecords } from "@/database/schema";
+import { books, borrowRecords, users } from "@/database/schema";
 import { eq, and } from "drizzle-orm";
 import dayjs from "dayjs";
+import { cancelBorrowWorkflow, triggerBorrowWorkflow } from "../workflow";
 
 export const borrowBook = async (params: BorrowBookParams) => {
   const { userId, bookId } = params;
@@ -22,8 +23,7 @@ export const borrowBook = async (params: BorrowBookParams) => {
       };
     }
 
-    const dueDate = dayjs().add(7, "day").toDate().toDateString();
-
+    const dueDate = dayjs().add(7, "day").toDate().toISOString();
     const isBorrowed = await db
       .select()
       .from(borrowRecords)
@@ -40,7 +40,7 @@ export const borrowBook = async (params: BorrowBookParams) => {
         dueDate,
         status: "BORROWED",
         returnDate: null,
-      }).where(eq(borrowRecords.id, isBorrowed[0].id));
+      }).where(eq(borrowRecords.id, isBorrowed[0].id)).returning({id: borrowRecords.id});
     }
     else{
        record = await db.insert(borrowRecords).values({
@@ -48,8 +48,19 @@ export const borrowBook = async (params: BorrowBookParams) => {
         bookId,
         dueDate,
         status: "BORROWED",
-      });
+      }).returning({id: borrowRecords.id});
     }
+    const res = await db.select({email: users.email, fullName: users.fullName}).from(users).where(eq(users.id, userId)).limit(1);
+    const workflowRunId = await triggerBorrowWorkflow({
+      email : res[0].email,
+      studentName: res[0].fullName,
+      dueDate,
+      borrowId: record[0].id,
+    });
+    await db
+      .update(borrowRecords)
+      .set({ workflowRunId })
+      .where(eq(borrowRecords.id, record[0].id));
     await db
       .update(books)
       .set({ availableCopies: book[0].availableCopies - 1 })
@@ -92,8 +103,14 @@ export const returnBook = async (params: BorrowBookParams) => {
     const record = await db.update(borrowRecords).set({
       returnDate,
       status: "RETURNED",
+      workflowRunId: "",
     }).where(eq(borrowRecords.id, isBorrowed[0].id));
 
+    try {
+      await cancelBorrowWorkflow(isBorrowed[0].workflowRunId);
+    } catch (error) {
+      console.log(error);
+    }
     await db
       .update(books)
       .set({ availableCopies: book[0].availableCopies + 1 })

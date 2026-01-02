@@ -69,7 +69,7 @@ export default async function Page({ searchParams }: { searchParams: { page?: st
                   {new Date(book.dueDate).toLocaleDateString()}
                   </TableCell>
                   <TableCell className={`text-center`}>
-                    <AdminBorrow status={book.status } borrowId={book.id} />
+                    <AdminBorrow dueDate={new Date(book.dueDate).toISOString()} borrowDate={new Date(book.borrowDate).toISOString()} returnDate={book.returnDate ? new Date(book.returnDate).toISOString() : null} status={book.status } borrowId={book.id} />
                   </TableCell>
                   <TableCell className="text-center">
                     <DownloadReceipt user={{fullName:book.fullName,email:book.email}} book={{title:book.title}} borrowDate={new Date(book.borrowDate).toLocaleDateString() } returnDate={book.returnDate && new Date(book?.returnDate).toLocaleDateString() }   />

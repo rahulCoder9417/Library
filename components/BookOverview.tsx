@@ -42,7 +42,7 @@ const BookOverview = async ({
     message:
       availableCopies <= 0
         ? "Book is not available"
-        : "You are  eligible to borrow this book",
+        : "You are Not eligible to borrow  book",
   };
   return (
     <section className="book-overview">

@@ -63,6 +63,8 @@ export const borrowRecords = pgTable("borrow_records", {
     .defaultNow()
     .notNull(),
   dueDate: date("due_date").notNull(),
+  workflowRunId: text("workflow_run_id").default("").notNull(),
+
   returnDate: date("return_date"),
   status: BORROW_STATUS_ENUM("status").default("BORROWED").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
