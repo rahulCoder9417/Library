@@ -48,7 +48,7 @@ export const { POST } = serve(async (context) => {
   if (
     !state1 ||
     state1.status === "RETURNED" ||
-    new Date(state1.dueDate).getTime() !== due
+    state1.dueDate !== dueDate
   ) {
     return;
   }
@@ -71,7 +71,7 @@ export const { POST } = serve(async (context) => {
   if (
     !state2 ||
     state2.status === "RETURNED" ||
-    new Date(state2.dueDate).getTime() !== due
+    state2.dueDate !== dueDate
   ) {
     return;
   }
