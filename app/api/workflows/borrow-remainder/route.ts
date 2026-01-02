@@ -28,25 +28,29 @@ export const { POST } = serve(async (context) => {
   const { email, studentName, dueDate, borrowId } =
     context.requestPayload as Payload;
    
-  
-  console.log("=== WORKFLOW DEBUG ===");
-  console.log("Received dueDate:", dueDate);
+
+    console.log("=== WORKFLOW DEBUG ===");
+    console.log("Received dueDate:", dueDate);
+    
     const due = new Date(dueDate + "T00:00:00.000Z").getTime();
     const now = Date.now();
   
-
-  const TWO_DAYS = 2 * 24 * 60 * 60 * 1000;
-  const twoDaysBefore = due - TWO_DAYS;
-  console.log("due:",due);
-  console.log("Current time:",now);
-  console.log("twoDaysBefore:",twoDaysBefore);
-  console.log("twoDaysBefore >now:",twoDaysBefore >now);
-  console.log("twoDaysBefore - now:",twoDaysBefore - now);
-
-  // ── wait until near due date
-  if (twoDaysBefore > now) {
-    await context.sleep("wait-before-due", twoDaysBefore - now);
-  }
+    // ✅ Change to ONE_DAY
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    const oneDayBefore = due - ONE_DAY;
+    
+    console.log("due:", due);
+    console.log("Current time:", now);
+    console.log("oneDayBefore:", oneDayBefore);
+    console.log("oneDayBefore > now:", oneDayBefore > now);
+    console.log("Sleep duration (ms):", oneDayBefore - now);
+    console.log("Sleep duration (days):", (oneDayBefore - now) / (1000 * 60 * 60 * 24));
+  
+    // ── wait until 1 day before due date
+    if (oneDayBefore > now) {
+      await context.sleep("wait-before-due", oneDayBefore - now);
+    }
+  
 
   // 🛑 cancellation / invalidation check
   const state1 = await context.run("check-before-due", async () => {
