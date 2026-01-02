@@ -48,7 +48,7 @@ export const { POST } = serve(async (context) => {
   
     // ── wait until 1 day before due date
     if (oneDayBefore > now) {
-      await context.sleep("wait-before-due", oneDayBefore - now);
+      await context.sleep("wait-before-due", (oneDayBefore - now)/1000);
     }
   
 
@@ -72,7 +72,7 @@ export const { POST } = serve(async (context) => {
 
   // ── wait until due date
   if (due > Date.now()) {
-    await context.sleep("wait-until-due", due - Date.now());
+    await context.sleep("wait-until-due",( due - Date.now())/1000);
   }
 
   // 🛑 cancellation / invalidation check again
