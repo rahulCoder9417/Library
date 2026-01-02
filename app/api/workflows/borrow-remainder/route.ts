@@ -1,7 +1,7 @@
 import { sendEmail } from "@/lib/email";
 import { serve } from "@upstash/workflow/nextjs";
 import { db } from "@/database/drizzle";
-import { borrowRecords } from "@/database/schema";
+import { books, borrowRecords } from "@/database/schema";
 import { eq } from "drizzle-orm";
 
 type Payload = {
@@ -16,6 +16,10 @@ const fetchBorrowState = async (borrowId: string) => {
     .select({
       status: borrowRecords.status,
       dueDate: borrowRecords.dueDate,
+      books :{
+        title: books.title,
+        coverImage: books.coverUrl,
+      }
     })
     .from(borrowRecords)
     .where(eq(borrowRecords.id, borrowId))
@@ -55,7 +59,7 @@ export const { POST } = serve(async (context) => {
 
   // ── send due soon email
   await context.run("send-due-soon", async () => {
-    await sendEmail(email, studentName, "borrow-remainder");
+    await sendEmail(email, studentName, "borrow-remainder",state1.books.title,state1.books.coverImage);
   });
 
   // ── wait until due date
@@ -78,7 +82,7 @@ export const { POST } = serve(async (context) => {
 
   // ── overdue email
   await context.run("send-overdue", async () => {
-    await sendEmail(email, studentName, "borrow-overdue");
+    await sendEmail(email, studentName, "borrow-overdue",state2.books.title,state2.books.coverImage);
   });
 });
 

@@ -3,8 +3,11 @@ type EmailType = "signup" | "signin" | "waiting" | "borrow-remainder" | "borrow-
 export const sendEmail = async (
   email: string,
   studentName: string,
-  type: EmailType
+  type: EmailType,
+  bookTitle?: string,
+  bookCover?: string
 ) => {
+  console.log(bookCover)
   const cardColor = "#020617";
   const textColor = "#e5e7eb";
   const mutedText = "#94a3b8";
@@ -45,6 +48,35 @@ export const sendEmail = async (
     message = `
       <p>Hi <strong>${studentName}</strong>,</p>
       <p>Your borrowed book is due in 2 days.</p>
+  
+<div
+  style="
+    margin: 16px 0;
+    padding: 12px;
+    border-radius: 10px;
+    background-color: #010b38;
+    text-align: center;
+  "
+>
+  <img
+    src="https://ik.imagekit.io/userrahul${bookCover}"
+    alt="Book Cover"
+    style="
+      max-width: 140px;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: block;
+      margin: 0 auto 12px;
+    "
+    loading="lazy"
+  />
+
+  <p style="margin: 0; font-size: 14px; color:#f5f7fa;">
+    <strong>${bookTitle}</strong>
+  </p>
+</div>
     `;
   }
 
@@ -53,6 +85,35 @@ export const sendEmail = async (
     message = `
       <p>Hi <strong>${studentName}</strong>,</p>
       <p>Your borrowed book is overdue.</p>
+
+      <div
+      style="
+        margin: 16px 0;
+        padding: 12px;
+        border-radius: 10px;
+        background-color: #010b38;
+        text-align: center;
+      "
+    >
+      <img
+        src="https://ik.imagekit.io/userrahul${bookCover}"
+        alt="Book Cover"
+        style="
+          max-width: 140px;
+          width: 100%;
+          height: auto;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          display: block;
+          margin: 0 auto 12px;
+        "
+        loading="lazy"
+      />
+    
+      <p style="margin: 0; font-size: 14px; color:#f5f7fa;">
+        <strong>${bookTitle}</strong>
+      </p>
+    </div>
     `;
   }
 

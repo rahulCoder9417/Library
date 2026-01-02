@@ -39,7 +39,6 @@ const [loading, setLoading] = useState(true);
           }),
         });
         const data = await response.json();
-
         setBooks(data);
       } catch (error) {
         console.error('Error fetching books:', error);
