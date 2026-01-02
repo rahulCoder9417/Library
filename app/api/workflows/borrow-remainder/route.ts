@@ -27,13 +27,19 @@ const fetchBorrowState = async (borrowId: string) => {
 export const { POST } = serve(async (context) => {
   const { email, studentName, dueDate, borrowId } =
     context.requestPayload as Payload;
-
+   
     const due = new Date(dueDate + "T00:00:00.000Z").getTime();
     const now = Date.now();
   
 
   const TWO_DAYS = 2 * 24 * 60 * 60 * 1000;
   const twoDaysBefore = due - TWO_DAYS;
+  console.log("=== WORKFLOW DEBUG ===");
+  console.log("Received dueDate:", due);
+  console.log("Current time:",now);
+  console.log("twoDaysBefore:",twoDaysBefore);
+  console.log("twoDaysBefore >now:",twoDaysBefore >now);
+  console.log("twoDaysBefore - now:",twoDaysBefore - now);
 
   // ── wait until near due date
   if (twoDaysBefore > now) {

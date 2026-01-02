@@ -3,7 +3,7 @@ import BookList from "@/components/BookList";
 import { db } from "@/database/drizzle";
 import { borrowRecords, users,books } from "@/database/schema";
 import { auth } from "@/auth";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import Avatar from "@/components/Avatar";
 import { Image } from "@/components/Image";
@@ -17,14 +17,14 @@ const Page = async () => {
   const borrowRecord = await db
   .select({ bookId: borrowRecords.bookId ,dueDate:borrowRecords.dueDate}) // Correct object structure
   .from(borrowRecords)
-  .where(eq(borrowRecords.userId, session.user.id));
-
+  .where(and(eq(borrowRecords.userId, session.user.id),eq(borrowRecords.status,"BORROWED")));
+console.log(borrowRecord)
   const booksData: Book[] = await Promise.all(
     borrowRecord.map(async (record) => {
       const [book] = await db.select().from(books).where(eq(books.id, record.bookId));
 
 
-      const dueDate = new Date(record.dueDate);
+      const dueDate =   new Date(record.dueDate);
       const currentDate = new Date();
       const diffInDays = Math.ceil((dueDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
 
@@ -35,7 +35,6 @@ const Page = async () => {
       } as Book;
     })
   );
-console.log(booksData)
 
   return (
     <div className="flex max-md:flex-col gap-16  p-8 w-[90vw] h-full">
