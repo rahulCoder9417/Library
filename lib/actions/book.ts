@@ -22,7 +22,7 @@ export const borrowBook = async (params: BorrowBookParams) => {
         error: "Book is not available for borrowing",
       };
     }
-    const dueDate = dayjs().add(7, "day").format("YYYY-MM-DD");
+    const dueDate = dayjs().add(5, "day").format("YYYY-MM-DD");
     
     const isBorrowed = await db
       .select()
