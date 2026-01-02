@@ -29,26 +29,14 @@ export const { POST } = serve(async (context) => {
     context.requestPayload as Payload;
    
 
-    console.log("=== WORKFLOW DEBUG ===");
-    console.log("Received dueDate:", dueDate);
-    
     const due = new Date(dueDate + "T00:00:00.000Z").getTime();
     const now = Date.now();
   
-    // ✅ Change to ONE_DAY
-    const ONE_DAY = 24 * 60 * 60 * 1000;
-    const oneDayBefore = due - ONE_DAY;
+    const TWO_DAY = 2 * 24 * 60 * 60 * 1000;
+    const twoDaysBefore = due - TWO_DAY;
     
-    console.log("due:", due);
-    console.log("Current time:", now);
-    console.log("oneDayBefore:", oneDayBefore);
-    console.log("oneDayBefore > now:", oneDayBefore > now);
-    console.log("Sleep duration (ms):", oneDayBefore - now);
-    console.log("Sleep duration (days):", (oneDayBefore - now) / (1000 * 60 * 60 * 24));
-  
-    // ── wait until 1 day before due date
-    if (oneDayBefore > now) {
-      await context.sleep("wait-before-due", (oneDayBefore - now)/1000);
+    if (twoDaysBefore > now) {
+      await context.sleep("wait-before-due", (twoDaysBefore - now)/1000);
     }
   
 
