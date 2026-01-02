@@ -28,8 +28,9 @@ export const { POST } = serve(async (context) => {
   const { email, studentName, dueDate, borrowId } =
     context.requestPayload as Payload;
 
-  const due = new Date(dueDate).getTime();
-  const now = Date.now();
+    const due = new Date(dueDate + "T23:59:59.999Z").getTime();
+    const now = Date.now();
+  
 
   const TWO_DAYS = 2 * 24 * 60 * 60 * 1000;
   const twoDaysBefore = due - TWO_DAYS;

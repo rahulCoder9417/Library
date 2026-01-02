@@ -22,8 +22,8 @@ export const borrowBook = async (params: BorrowBookParams) => {
         error: "Book is not available for borrowing",
       };
     }
-
-    const dueDate = dayjs().add(7, "day").toDate().toISOString();
+    const dueDate = dayjs().add(7, "day").format("YYYY-MM-DD");
+    
     const isBorrowed = await db
       .select()
       .from(borrowRecords)
@@ -97,19 +97,23 @@ export const returnBook = async (params: BorrowBookParams) => {
       ))
       .limit(1);
 
-    const returnDate = dayjs().toDate().toDateString();
+    const returnDate = dayjs().format("YYYY-MM-DD");
+    const workflowRunId = isBorrowed[0].workflowRunId;
 
-    
     const record = await db.update(borrowRecords).set({
       returnDate,
       status: "RETURNED",
       workflowRunId: "",
     }).where(eq(borrowRecords.id, isBorrowed[0].id));
 
-    try {
-      await cancelBorrowWorkflow(isBorrowed[0].workflowRunId);
-    } catch (error) {
-      console.log(error);
+    // ✅ Cancel workflow after DB update
+    if (workflowRunId) {
+      try {
+        await cancelBorrowWorkflow(workflowRunId);
+      } catch (error) {
+        console.log("Failed to cancel workflow:", error);
+        // Continue anyway - status check will handle it
+      }
     }
     await db
       .update(books)
